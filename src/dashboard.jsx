@@ -4,26 +4,30 @@ import Popup from "reactjs-popup";
 
 class Dashboard extends Component {
   state = {
-    rovers: [{ id: 0, name: "" }],
-    income: "First"
+    rovers: [{ id: 0, name: "First" }],
+    income: ""
   };
   handleChange = ({ value }) => {
-    const rovers = [...this.state.rovers];
-
-    rovers[0].name = value;
-
-    this.setState({ rovers });
+    this.setState({ income: value });
   };
 
   renderRover = () => {
-    this.setState({ income: this.state.rovers[0].name });
+    const rovers = [...this.state.rovers];
+    const temp = { id: 0, name: "" };
+    temp.id++;
+    temp.name = this.state.income;
+    rovers.push(temp);
+    this.setState({ rovers });
   };
   render() {
     return (
       <div>
         <h1>Mars new Rover</h1>
         <hr />
-        <Rover income={this.state.income} />
+
+        {this.state.rovers.map(rover => (
+          <Rover key={rover.name} rov={rover.name} />
+        ))}
 
         <hr />
         <Popup
@@ -36,7 +40,7 @@ class Dashboard extends Component {
             New Rover to Mars
             <input
               type="text"
-              value={this.state.rovers[0].name}
+              value={this.state.income}
               onChange={e => this.handleChange(e.currentTarget)}
               placeholder="Rover Name"
             />

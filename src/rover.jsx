@@ -10,8 +10,7 @@ class Rover extends Component {
     padding: 20
   };
   render() {
-    return <div style={this.style}>{this.props.income}</div>;
+    return <div style={this.style}>{this.props.rov}</div>;
   }
 }
-
 export default Rover;
