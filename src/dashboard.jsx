@@ -1,23 +1,26 @@
 import React, { Component } from "react";
-import Rover from "./rover";
+import Rover from "./components/rover";
 import Popup from "reactjs-popup";
+import http from "./services/httpService";
 
 class Dashboard extends Component {
   state = {
-    rovers: [{ id: 0, name: "First" }],
-    income: ""
+    rovers: [],
+    input: ""
   };
-  handleChange = ({ value }) => {
-    this.setState({ income: value });
-  };
+  async componentDidMount() {
+    const { data } = await http.get("/rovers");
+    this.setState({ rovers: data });
+  }
+  handleChange({ value }) {
+    console.log("value", value);
+    this.setState({ input: value });
+  }
 
-  renderRover = () => {
-    const rovers = [...this.state.rovers];
-    const temp = { id: 0, name: "" };
-    temp.id++;
-    temp.name = this.state.income;
-    rovers.push(temp);
-    this.setState({ rovers });
+  launchRover = async () => {
+    const { input } = this.state;
+    await http.post(`/add-rover/${input}`);
+    window.location = "/";
   };
   render() {
     return (
@@ -26,7 +29,11 @@ class Dashboard extends Component {
         <hr />
 
         {this.state.rovers.map(rover => (
-          <Rover key={rover.name} rov={rover.name} />
+          <Rover
+            key={rover.state + rover.name}
+            name={rover.name}
+            state={rover.state}
+          />
         ))}
 
         <hr />
@@ -36,15 +43,15 @@ class Dashboard extends Component {
           }
           position="right center"
         >
-          <div style={{ width: 100, height: 200 }}>
+          <div style={{ width: 200, height: 200 }}>
             New Rover to Mars
             <input
+              autoFocus
               type="text"
-              value={this.state.income}
-              onChange={e => this.handleChange(e.currentTarget)}
+              onChange={e => this.handleChange(e.target)}
               placeholder="Rover Name"
             />
-            <button onClick={this.renderRover} className="btn btn-primary">
+            <button onClick={this.launchRover} className="btn btn-primary">
               Launch
             </button>
           </div>
